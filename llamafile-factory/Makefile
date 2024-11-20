@@ -2,10 +2,10 @@
 
 .DEFAULT_GOAL := help
 
-model_name = "tinyllama"
-download_url = "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q2_K.gguf"
-license_url = ""
-llamafile_version = "llamafile v0.8.16"
+model_name :=tinyllama
+download_url :=https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q2_K.gguf
+license_url :=LICENSE
+llamafile_version :=0.8.16
 
 help:
 	@echo ""
@@ -27,14 +27,13 @@ help:
 	@echo "** To override, some default values run make <target> <Argument_name>=<Argument_value>"
 	@echo ""
 
-build:
+build: download_llamafile download_quantized_model
 	@echo "Builing the llamafile"
-	build/$(model).llamafile: download_llamafile models/$(model).gguf
 	mkdir -p build
-	cp llamafile/bin/llamafile build/$(model).llamafile
-	echo "-m\n$(model).gguf\n-c\n0\n..." >build/.args
-	./llamafile/bin/zipalign -j0 build/$(model).llamafile models/$(model).gguf build/.args $(license)
-	chmod a+x build/$(model).llamafile
+	cp llamafile/bin/llamafile build/$(model_name).llamafile
+	echo "-m\n$(model_name).gguf\n-c\n0\n..." >build/.args
+	./llamafile/bin/zipalign -j0 build/$(model_name).llamafile model/tinyllama-1.1b-chat-v1.0.Q2_K.gguf build/.args $(license)
+	chmod a+x build/$(model_name).llamafile
 
 clean:
 	@echo "Cleaning build files and artifacts"
@@ -47,14 +46,10 @@ clean-all:
 
 download_quantized_model:
 	mkdir -p model
-	cd model && curl -L -O -C $(download_url)
-
-models/$(model).gguf:
-	mkdir -p models
-	cd models && curl -L -O -C - https://assets.maragu.dev/llm/$(model).gguf
+	cd model && curl -L -O $(download_url) -o $(model_name).gguf
 
 download_llamafile:
-	curl -L -O -C - https://github.com/Mozilla-Ocho/llamafile/releases/latest/download/llamafile-$(llamafile_version).zip
+	curl -L -O -C - https://github.com/Mozilla-Ocho/llamafile/releases/download/0.8.16/llamafile-$(llamafile_version).zip
 	unzip llamafile-$(llamafile_version).zip
 	rm -f llamafile-$(llamafile_version).zip
 	mv llamafile-$(llamafile_version) llamafile
