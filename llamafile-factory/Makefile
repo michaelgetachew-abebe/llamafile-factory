@@ -8,6 +8,7 @@ license_url = ""
 llamafile_version = ""
 
 help:
+	@echo ""
 	@echo "Available targets:"
 	@echo "	build		- Build the project"
 	@echo "	clean		- Clean the build files"
@@ -23,6 +24,7 @@ help:
 	@echo "	llamafile_version"	- the version of the llamafile to use
 	@echo ""
 	@echo "** To override, some default values run make <target> <Argument_name>=<Argument_value>"
+	@echo ""
 
 build:
 	@echo "Builing the llamafile"
