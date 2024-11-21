@@ -31,7 +31,7 @@ build: download_llamafile download_quantized_model
 	@echo "Builing the llamafile"
 	mkdir -p build
 	cp llamafile/bin/llamafile build/$(model_name).llamafile
-	echo "-m\n$(model_name).gguf\n-c\n0\n..." >build/.args
+	echo "-c\n0" >build/.args
 	./llamafile/bin/zipalign -j0 build/$(model_name).llamafile model/tinyllama-1.1b-chat-v1.0.Q2_K.gguf build/.args $(license)
 	chmod a+x build/$(model_name).llamafile
 
